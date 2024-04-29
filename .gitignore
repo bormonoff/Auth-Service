@@ -1,0 +1,9 @@
+# directories
+.venv/
+.ruff_cache/
+__pycache__/
+
+
+# files
+.env
+poetry.lock
