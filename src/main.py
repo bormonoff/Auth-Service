@@ -3,21 +3,33 @@ import contextlib
 import uvicorn
 from fastapi import FastAPI
 
-from api.v1 import auth, roles, users
-from db import postgres
+from api.v1 import auth, personal, roles
+from core.config import get_settings
+from db.prepare_db import create_database
 
 
 @contextlib.asynccontextmanager
 async def lifespan(app: FastAPI):
-    postgres.startup
+    await create_database()
     yield
 
-app = FastAPI()
+app = FastAPI(
+    lifespan=lifespan,
+    title=get_settings().PROJECT_NAME,
+    version=get_settings().VERSION,
+    description=get_settings().DESCRIPTION,
+    docs_url=get_settings().OPEN_API_DOCS_URL,
+    openapi_url=get_settings().OPEN_API_URL,
+)
 
-app.include_router(users.router, prefix="/api/v1/auth")
-app.include_router(auth.router, prefix="/api/v1/users")
-app.include_router(roles.router, prefix="/api/v1/roles")
+app.include_router(auth.router, prefix=get_settings().URL_PREFIX + "/auth")
+app.include_router(
+    personal.router,
+    prefix=get_settings().URL_PREFIX + "/profile",
+    tags=["Personal account."],
+)
+app.include_router(roles.router, prefix=get_settings().URL_PREFIX + "/roles")
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=get_settings().AUTH_FASTAPI_PORT)
