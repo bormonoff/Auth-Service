@@ -22,4 +22,3 @@ class SessionHandler:
             yield session
 
 session_handler = SessionHandler()
-

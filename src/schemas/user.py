@@ -1,19 +1,42 @@
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, EmailStr
+
+from schemas.mixins import CreatedMixinSchema
 
 
-class UserCreate(BaseModel):
-    login: str
-    password: str
-    first_name: str
-    last_name: str
+class UserInDB(CreatedMixinSchema):
+    model_config = ConfigDict(from_attributes=True)
 
-
-class UserInDB(BaseModel):
     id: UUID
+    username: str
+    email: EmailStr
     first_name: str
     last_name: str
+    is_active: bool
+    hashed_password: str
 
-    class Config:
-        orm_mode = True
+
+class UserSaveToDB(BaseModel):
+    username: str
+    email: EmailStr
+    first_name: str
+    last_name: str
+    hashed_password: str
+
+
+class UserSelf(BaseModel):
+
+    username: str
+    email: EmailStr
+    first_name: str
+    last_name: str
+    password: str
+
+
+class UserSelfResponse(BaseModel):
+
+    username: str
+    email: EmailStr
+    first_name: str
+    last_name: str
