@@ -34,6 +34,11 @@ class UserSelf(BaseModel):
     password: str
 
 
+class UserBase(BaseModel):
+    username: str
+    password: str
+
+
 class UserSelfResponse(BaseModel):
 
     username: str

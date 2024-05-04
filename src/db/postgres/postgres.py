@@ -1,5 +1,7 @@
-from typing import List, TypeVar
+from functools import lru_cache
+from typing import Any, List, TypeVar
 
+from fastapi import Depends
 from pydantic import BaseModel
 from sqlalchemy import and_, delete, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -7,78 +9,88 @@ from sqlalchemy.future import select
 
 from db.postgres.session_handler import session_handler
 from db.postgres.storage import BaseStorage
+from models.user import User
 
 ModelType = TypeVar("ModelType", bound=session_handler.base)
 
 
 class PostgresStorage(BaseStorage):
-    def __init__(self, model):
-        self.model = model
-
     async def create(
-        self, db: AsyncSession, obj: BaseModel
+        self,
+        session: AsyncSession,
+        obj: BaseModel,
+        table: Any
     ) -> ModelType | None:
         obj_dict = obj.model_dump()
-        db_obj = self.model(**obj_dict)
-        db.add(db_obj)
-        await db.commit()
-        await db.refresh(db_obj)
+        db_obj = table(**obj_dict)
+        session.add(db_obj)
+        await session.commit()
+        await session.refresh(db_obj)
         return db_obj
 
     async def delete(
-        self, db: AsyncSession, obj: BaseModel
+        self, session: AsyncSession, obj: BaseModel,
+        table: Any
     ) -> ModelType | None:
         obj_dict = obj.model_dump()
-        conditions = [getattr(self.model, k) == v for k, v in obj_dict.items()]
+        conditions = [getattr(table, k) == v for k, v in obj_dict.items()]
         stmt = (
-            delete(self.model).where(and_(*conditions)).returning(self.model)
+            delete(table).where(and_(*conditions)).returning(table)
         )
-        result = await db.execute(statement=stmt)
-        await db.commit()
+        result = await session.execute(statement=stmt)
+        await session.commit()
         return result.scalar_one_or_none()
 
-    async def execute(self, db: AsyncSession, stmt):
-        result = await db.execute(statement=stmt)
+    async def execute(self, session: AsyncSession, stmt):
+        result = await session.execute(statement=stmt)
         return result
 
-    async def get(self, db: AsyncSession, obj: BaseModel) -> ModelType | None:
+    async def get(self, session: AsyncSession, obj: BaseModel,
+        table: Any) -> ModelType | None:
         obj_dict = obj.model_dump()
-        conditions = [getattr(self.model, k) == v for k, v in obj_dict.items()]
-        stmt = select(self.model).where(and_(*conditions))
-        result = await db.execute(statement=stmt)
+        conditions = [getattr(table, k) == v for k, v in obj_dict.items()]
+        stmt = select(table).where(and_(*conditions))
+        result = await session.execute(statement=stmt)
         return result.scalar_one_or_none()
 
     async def get_list(
         self,
-        db: AsyncSession,
+        session: AsyncSession,
+        table: Any,
         filters: dict | None = None,
         offset: int = 0,
         limit: int | None = None,
     ) -> List[ModelType] | None:
         if not filters:
             filters = {}
-        conditions = [getattr(self.model, k) == v for k, v in filters.items()]
-        stmt = select(self.model).where(and_(*conditions)).offset(offset)
+        conditions = [getattr(table, k) == v for k, v in filters.items()]
+        stmt = select(table).where(and_(*conditions)).offset(offset)
         if limit:
             stmt = stmt.limit(limit)
-        results = await db.execute(stmt)
+        results = await session.execute(stmt)
         return results.scalars().all()
 
     async def update(
         self,
-        db: AsyncSession,
+        session: AsyncSession,
         obj: BaseModel,
+        table: Any
     ) -> ModelType | None:
         obj_dict = obj.model_dump()
         stmt = (
-            update(self.model)
-            .where(self.model.id == obj.id)
+            update(table)
+            .where(table.id == obj.id)
             .values(**obj_dict)
         )
-        await db.execute(stmt)
-        await db.commit()
-        stmt = select(self.model).where(self.model.id == obj.id)
-        results = await db.execute(stmt)
+        await session.execute(stmt)
+        await session.commit()
+        stmt = select(table).where(table.id == obj.id)
+        results = await session.execute(stmt)
         db_obj = results.scalar_one()
-        await db.refresh(db_obj)
+        await session.refresh(db_obj)
         return db_obj
+
+
+@lru_cache()
+def get_postgers_storage() -> PostgresStorage:
+    return PostgresStorage()

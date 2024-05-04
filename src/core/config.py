@@ -21,6 +21,10 @@ class Settings(BaseSettings):
     PG_PORT: int = Field(default="9999")
     PG_DB: str = Field(default="Auth_DB")
 
+    # Redis
+    REDIS_HOST: str = Field(default="localhost")
+    REDIS_PORT: int = Field(default="9998")
+
     # Настройки Swagger-документации
     URL_PREFIX: str = "/api/v1"
     PROJECT_NAME: str = Field(default="Auth-service")
@@ -32,6 +36,9 @@ class Settings(BaseSettings):
     # FastAPI
     AUTH_FASTAPI_HOST: str = Field(default="fastapi-auth")
     AUTH_FASTAPI_PORT: int = Field(default="8000")
+
+    # JWT
+    JWT_SECRET: str = Field(default="Secret encode token")
 
     @property
     def postgres_dsn(self) -> str:

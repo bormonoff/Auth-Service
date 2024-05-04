@@ -20,11 +20,11 @@ router = APIRouter()
 )
 async def create_user(
     user_service: Annotated[UserService, Depends(get_user_service)],
-    db: Annotated[AsyncSession, Depends(session_handler.create_session)],
+    session: Annotated[AsyncSession, Depends(session_handler.create_session)],
     user: UserSelf,
 ) -> UserSelfResponse | HTTPException:
     """Register a user in the authentication service."""
-    new_user = await user_service.create_user(db=db, user=user)
+    new_user = await user_service.create_user( session=session, user=user)
     return new_user
 
 
@@ -36,11 +36,11 @@ async def create_user(
 )
 async def get_current_user_data(
     user_service: Annotated[UserService, Depends(get_user_service)],
-    db: Annotated[AsyncSession, Depends(session_handler.create_session)],
+    session: Annotated[AsyncSession, Depends(session_handler.create_session)],
     user_id: UUID
 ) -> UserSelfResponse | HTTPException:
     """Get data about current user."""
-    user = await user_service.get_user_from_db(db=db, user=user_id)
+    user = await user_service.get_user_from_db( session=session, user=user_id)
     return UserSelfResponse(**user.model_dump())
 
 
@@ -51,13 +51,13 @@ async def get_current_user_data(
 )
 async def update_user_data(
     user_service: Annotated[UserService, Depends(get_user_service)],
-    db: Annotated[AsyncSession, Depends(session_handler.create_session)],
+    session: Annotated[AsyncSession, Depends(session_handler.create_session)],
     user_id: UUID,
     update_user_data: UserSelf,
 ) -> UserSelfResponse | HTTPException:
     """Change personal user information."""
     updated_user = await user_service.update_user(
-        db=db, user=user_id, update_user_data=update_user_data
+         session=session, user=user_id, update_user_data=update_user_data
     )
     return UserSelfResponse(**updated_user.model_dump())
 
@@ -65,9 +65,9 @@ async def update_user_data(
 @router.delete("/personal", description="Delete personal data.")
 async def delete_user_data(
     user_service: Annotated[UserService, Depends(get_user_service)],
-    db: Annotated[AsyncSession, Depends(session_handler.create_session)],
+    session: Annotated[AsyncSession, Depends(session_handler.create_session)],
     user_id: UUID
 ) -> dict[str, str]:
     """Delete personal information."""
-    await user_service.delete_user(db=db, user=user_id)
-    return {"status": "Data has been successfully deleted."}
+    await user_service.delete_user( session=session, user=user_id)
+    return {"status": "User has been successfully deleted."}

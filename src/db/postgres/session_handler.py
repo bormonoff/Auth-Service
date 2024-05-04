@@ -1,6 +1,3 @@
-
-from functools import lru_cache
-
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
@@ -13,7 +10,7 @@ class SessionHandler:
         self.engine = create_async_engine(
             get_settings().postgres_dsn, echo=True, future=True
         )
-        self.session_factory =  sessionmaker(
+        self.session_factory = sessionmaker(
             self.engine, class_=AsyncSession, expire_on_commit=False
         )
 
@@ -22,3 +19,4 @@ class SessionHandler:
             yield session
 
 session_handler = SessionHandler()
+
