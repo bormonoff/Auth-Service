@@ -14,8 +14,8 @@ async def create_database() -> None:
             await conn.run_sync(session_handler.base.metadata.create_all)
 
 async def redis_startup():
-    redis.redis = Redis(host=get_settings().REDIS_HOST,
-                        port=get_settings().REDIS_PORT,
+    redis.redis = Redis(host=get_settings().AUTH_REDIS_HOST,
+                        port=get_settings().AUTH_REDIS_PORT,
                         db=0, decode_responses=True)
 
 async def redis_shutdown():

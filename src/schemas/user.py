@@ -9,7 +9,7 @@ class UserInDB(CreatedMixinSchema):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
-    username: str
+    login: str
     email: EmailStr
     first_name: str
     last_name: str
@@ -18,7 +18,7 @@ class UserInDB(CreatedMixinSchema):
 
 
 class UserSaveToDB(BaseModel):
-    username: str
+    login: str
     email: EmailStr
     first_name: str
     last_name: str
@@ -27,7 +27,7 @@ class UserSaveToDB(BaseModel):
 
 class UserSelf(BaseModel):
 
-    username: str
+    login: str
     email: EmailStr
     first_name: str
     last_name: str
@@ -35,13 +35,19 @@ class UserSelf(BaseModel):
 
 
 class UserBase(BaseModel):
-    username: str
+    login: str
     password: str
+
+
+class UserLogin(BaseModel):
+    login: str
+    acess_token: str
 
 
 class UserSelfResponse(BaseModel):
 
-    username: str
+    login: str
     email: EmailStr
     first_name: str
     last_name: str
+

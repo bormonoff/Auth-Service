@@ -5,13 +5,15 @@ from fastapi import FastAPI
 
 from api.v1 import auth, personal, roles
 from core.config import get_settings
-from db.prepare_db import create_database
+from db.prepare_db import create_database, redis_shutdown, redis_startup
 
 
 @contextlib.asynccontextmanager
 async def lifespan(app: FastAPI):
     await create_database()
+    await redis_startup()
     yield
+    await redis_shutdown()
 
 app = FastAPI(
     lifespan=lifespan,
@@ -22,7 +24,11 @@ app = FastAPI(
     openapi_url=get_settings().OPEN_API_URL,
 )
 
-app.include_router(auth.router, prefix=get_settings().URL_PREFIX + "/auth")
+app.include_router(
+    auth.router,
+    prefix=get_settings().URL_PREFIX + "/auth",
+    tags=["Authentication service."]
+)
 app.include_router(
     personal.router,
     prefix=get_settings().URL_PREFIX + "/profile",

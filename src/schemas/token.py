@@ -1,17 +1,26 @@
+from uuid import UUID
+
 from pydantic import BaseModel, Field
 
 
-class TokenPair(BaseModel):
+class UserTokenPair(BaseModel):
+    login: str
     access_token: str
     refresh_token: str
 
 
-class AcessTokenHeader(BaseModel):
+class TokenHeader(BaseModel):
     typ: str = Field(default="JWT")
     alg: str = Field(default="HS256")
 
 
-class AcessTokenPayload(BaseModel):
+class TokenPayload(BaseModel):
     login: str
-    role: str
+    body: str
     exp: str
+
+
+class RefreshTokenInDB(BaseModel):
+    id: UUID
+    user_id: UUID
+    refresh_token: str

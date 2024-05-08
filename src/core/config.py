@@ -22,8 +22,8 @@ class Settings(BaseSettings):
     PG_DB: str = Field(default="Auth_DB")
 
     # Redis
-    REDIS_HOST: str = Field(default="localhost")
-    REDIS_PORT: int = Field(default="9998")
+    AUTH_REDIS_HOST: str = Field(default="fastapi-auth")
+    AUTH_REDIS_PORT: int = Field(default="9998")
 
     # Настройки Swagger-документации
     URL_PREFIX: str = "/api/v1"
@@ -39,6 +39,22 @@ class Settings(BaseSettings):
 
     # JWT
     JWT_SECRET: str = Field(default="Secret encode token")
+    JWT_CODE: str = Field(default="utf-8")
+    # Acess token lifetime in hours
+    ACESS_TOKEN_LIFETIME: int = Field(default=2)
+    # Acess token lifetime in days
+    REFRESH_TOKEN_LIFETIME: int = Field(default=14)
+    # Validation config
+    LOGIN_MIN_LENGTH: int = 5
+    LOGIN_MAX_LENGTH: int = 50
+    LOGIN_PATTERN: str = (
+        f"^[A-Za-z0-9_-]{{{LOGIN_MIN_LENGTH},{LOGIN_MAX_LENGTH}}}$"
+    )
+    PASSWORD_MIN_LENGTH: int = 5
+    PASSWORD_MAX_LENGTH: int = 50
+    HASHED_PASSWORD_MAX_LENGTH: int = 255
+    FIRST_NAME_MAX_LENGTH: int = 255
+    LAST_NAME_MAX_LENGTH: int = 255
 
     @property
     def postgres_dsn(self) -> str:

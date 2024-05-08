@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.postgres.session_handler import session_handler
-from schemas.user import UserSelf, UserSelfResponse
+from schemas.user import UserLogin, UserSelf, UserSelfResponse
 from services.user_service import UserService, get_user_service
 
 router = APIRouter()
@@ -37,10 +37,13 @@ async def create_user(
 async def get_current_user_data(
     user_service: Annotated[UserService, Depends(get_user_service)],
     session: Annotated[AsyncSession, Depends(session_handler.create_session)],
-    user_id: UUID
+    login: str,
+    token: str
 ) -> UserSelfResponse | HTTPException:
     """Get data about current user."""
-    user = await user_service.get_user_from_db( session=session, user=user_id)
+    user = await user_service.get_user(
+        session=session, user=UserLogin(login=login, acess_token=token)
+    )
     return UserSelfResponse(**user.model_dump())
 
 
@@ -52,12 +55,12 @@ async def get_current_user_data(
 async def update_user_data(
     user_service: Annotated[UserService, Depends(get_user_service)],
     session: Annotated[AsyncSession, Depends(session_handler.create_session)],
-    user_id: UUID,
+    user: UserLogin,
     update_user_data: UserSelf,
 ) -> UserSelfResponse | HTTPException:
     """Change personal user information."""
     updated_user = await user_service.update_user(
-         session=session, user=user_id, update_user_data=update_user_data
+         session=session, user=user, update_user_data=update_user_data
     )
     return UserSelfResponse(**updated_user.model_dump())
 
@@ -66,8 +69,8 @@ async def update_user_data(
 async def delete_user_data(
     user_service: Annotated[UserService, Depends(get_user_service)],
     session: Annotated[AsyncSession, Depends(session_handler.create_session)],
-    user_id: UUID
+    user: UserLogin
 ) -> dict[str, str]:
     """Delete personal information."""
-    await user_service.delete_user( session=session, user=user_id)
+    await user_service.delete_user( session=session, user=user)
     return {"status": "User has been successfully deleted."}

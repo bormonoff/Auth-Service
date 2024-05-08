@@ -1,7 +1,6 @@
 from functools import lru_cache
 from typing import Any, List, TypeVar
 
-from fastapi import Depends
 from pydantic import BaseModel
 from sqlalchemy import and_, delete, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,7 +8,6 @@ from sqlalchemy.future import select
 
 from db.postgres.session_handler import session_handler
 from db.postgres.storage import BaseStorage
-from models.user import User
 
 ModelType = TypeVar("ModelType", bound=session_handler.base)
 
@@ -29,7 +27,8 @@ class PostgresStorage(BaseStorage):
         return db_obj
 
     async def delete(
-        self, session: AsyncSession, obj: BaseModel,
+        self, session: AsyncSession,
+        obj: BaseModel,
         table: Any
     ) -> ModelType | None:
         obj_dict = obj.model_dump()
@@ -45,8 +44,7 @@ class PostgresStorage(BaseStorage):
         result = await session.execute(statement=stmt)
         return result
 
-    async def get(self, session: AsyncSession, obj: BaseModel,
-        table: Any) -> ModelType | None:
+    async def get(self, session: AsyncSession, obj: BaseModel, table: Any) -> ModelType | None:
         obj_dict = obj.model_dump()
         conditions = [getattr(table, k) == v for k, v in obj_dict.items()]
         stmt = select(table).where(and_(*conditions))
