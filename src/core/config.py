@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     AUTH_REDIS_HOST: str = Field(default="fastapi-auth")
     AUTH_REDIS_PORT: int = Field(default="9998")
 
-    # Настройки Swagger-документации
+    # Swagger-docs config
     URL_PREFIX: str = "/api/v1"
     PROJECT_NAME: str = Field(default="Auth-service")
     VERSION: str = "0.1.0"
@@ -45,6 +45,12 @@ class Settings(BaseSettings):
     # Acess token lifetime in days
     REFRESH_TOKEN_LIFETIME: int = Field(default=14)
     # Validation config
+    ROLE_TITLE_MIN_LENGTH: int = 3
+    ROLE_TITLE_MAX_LENGTH: int = 50
+    ROLE_TITLE_PATTERN: str = (
+        f"^[A-Za-z0-9_-]{{{ROLE_TITLE_MIN_LENGTH},{ROLE_TITLE_MAX_LENGTH}}}$"
+    )
+    ROLE_DESCRIPTION_MAX_LENGTH: int = 255
     LOGIN_MIN_LENGTH: int = 5
     LOGIN_MAX_LENGTH: int = 50
     LOGIN_PATTERN: str = (

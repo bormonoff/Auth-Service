@@ -15,6 +15,7 @@ async def lifespan(app: FastAPI):
     yield
     await redis_shutdown()
 
+
 app = FastAPI(
     lifespan=lifespan,
     title=get_settings().PROJECT_NAME,
@@ -27,15 +28,16 @@ app = FastAPI(
 app.include_router(
     auth.router,
     prefix=get_settings().URL_PREFIX + "/auth",
-    tags=["Authentication service."]
+    tags=["Authentication service."],
 )
 app.include_router(
     personal.router,
     prefix=get_settings().URL_PREFIX + "/profile",
     tags=["Personal account."],
 )
-app.include_router(roles.router, prefix=get_settings().URL_PREFIX + "/roles")
-
+app.include_router(
+    roles.router, prefix=get_settings().URL_PREFIX + "/roles", tags=["Roles"]
+)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=get_settings().AUTH_FASTAPI_PORT)

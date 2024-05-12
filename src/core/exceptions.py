@@ -5,7 +5,7 @@ class UserInactiveException(HTTPException):
     def __init__(self):
         super().__init__(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="User has been deleted and now is inactive."
+            detail="User has been deleted and now is inactive.",
         )
 
 
@@ -36,8 +36,14 @@ class UserHasBeenDeletedException(HTTPException):
 class DBException(HTTPException):
     def __init__(self, detail):
         super().__init__(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail=detail
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=detail
+        )
+
+
+class RoleNotFoundException(HTTPException):
+    def __init__(self):
+        super().__init__(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Role not exists"
         )
 
 
@@ -53,7 +59,7 @@ class InvalidToken(HTTPException):
     def __init__(self):
         super().__init__(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token hash is incorrect."
+            detail="Token hash is incorrect.",
         )
 
 
@@ -61,7 +67,7 @@ class ExpireToken(HTTPException):
     def __init__(self):
         super().__init__(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token is invalid due to it's exp time."
+            detail="Token is invalid due to it's exp time.",
         )
 
 
@@ -69,7 +75,7 @@ class FingerprintExists(HTTPException):
     def __init__(self):
         super().__init__(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="This fingerprint already exists."
+            detail="This fingerprint already exists.",
         )
 
 
@@ -77,5 +83,13 @@ class FingerprintNotExists(HTTPException):
     def __init__(self):
         super().__init__(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Error. Fingerprint doesn't assosiate with the token."
+            detail="Error. Fingerprint doesn't assosiate with the token.",
+        )
+
+
+class CommonExistsException(HTTPException):
+    def __init__(self, info=""):
+        super().__init__(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"DB Error - already exists. {info}",
         )
