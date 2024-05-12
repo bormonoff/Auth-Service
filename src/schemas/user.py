@@ -17,6 +17,11 @@ class UserInDB(CreatedMixinSchema):
     hashed_password: str
 
 
+class UserInDBAccess(UserInDB):
+    model_config = ConfigDict(from_attributes=True)
+    access: list = []
+
+
 class UserSaveToDB(BaseModel):
     login: str
     email: EmailStr
@@ -26,7 +31,6 @@ class UserSaveToDB(BaseModel):
 
 
 class UserSelf(BaseModel):
-
     login: str
     email: EmailStr
     first_name: str
@@ -45,9 +49,11 @@ class UserLogin(BaseModel):
 
 
 class UserSelfResponse(BaseModel):
-
     login: str
     email: EmailStr
     first_name: str
     last_name: str
 
+
+class UserLoginSchema(BaseModel):
+    login: str

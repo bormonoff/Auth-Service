@@ -14,10 +14,7 @@ ModelType = TypeVar("ModelType", bound=session_handler.base)
 
 class PostgresStorage(BaseStorage):
     async def create(
-        self,
-        session: AsyncSession,
-        obj: BaseModel,
-        table: Any
+        self, session: AsyncSession, obj: BaseModel, table: Any
     ) -> ModelType | None:
         obj_dict = obj.model_dump()
         db_obj = table(**obj_dict)
@@ -27,15 +24,11 @@ class PostgresStorage(BaseStorage):
         return db_obj
 
     async def delete(
-        self, session: AsyncSession,
-        obj: BaseModel,
-        table: Any
+        self, session: AsyncSession, obj: BaseModel, table: Any
     ) -> ModelType | None:
         obj_dict = obj.model_dump()
         conditions = [getattr(table, k) == v for k, v in obj_dict.items()]
-        stmt = (
-            delete(table).where(and_(*conditions)).returning(table)
-        )
+        stmt = delete(table).where(and_(*conditions)).returning(table)
         result = await session.execute(statement=stmt)
         await session.commit()
         return result.scalar_one_or_none()
@@ -44,7 +37,9 @@ class PostgresStorage(BaseStorage):
         result = await session.execute(statement=stmt)
         return result
 
-    async def get(self, session: AsyncSession, obj: BaseModel, table: Any) -> ModelType | None:
+    async def get(
+        self, session: AsyncSession, obj: BaseModel, table: Any
+    ) -> ModelType | None:
         obj_dict = obj.model_dump()
         conditions = [getattr(table, k) == v for k, v in obj_dict.items()]
         stmt = select(table).where(and_(*conditions))
@@ -69,17 +64,10 @@ class PostgresStorage(BaseStorage):
         return results.scalars().all()
 
     async def update(
-        self,
-        session: AsyncSession,
-        obj: BaseModel,
-        table: Any
+        self, session: AsyncSession, obj: BaseModel, table: Any
     ) -> ModelType | None:
         obj_dict = obj.model_dump()
-        stmt = (
-            update(table)
-            .where(table.id == obj.id)
-            .values(**obj_dict)
-        )
+        stmt = update(table).where(table.id == obj.id).values(**obj_dict)
         await session.execute(stmt)
         await session.commit()
         stmt = select(table).where(table.id == obj.id)

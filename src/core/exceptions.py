@@ -47,6 +47,14 @@ class RoleNotFoundException(HTTPException):
         )
 
 
+class AccessNotFoundException(HTTPException):
+    def __init__(self):
+        super().__init__(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User doesn't have specified role",
+        )
+
+
 class InvalidUserOrPassword(HTTPException):
     def __init__(self):
         super().__init__(
@@ -59,7 +67,7 @@ class InvalidToken(HTTPException):
     def __init__(self):
         super().__init__(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token hash is incorrect.",
+            detail="Token is incorrect.",
         )
 
 
@@ -92,4 +100,13 @@ class CommonExistsException(HTTPException):
         super().__init__(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=f"DB Error - already exists. {info}",
+        )
+
+
+class UnAuthorizedException(HTTPException):
+    def __init__(self, detail="", authenticate_value=""):
+        super().__init__(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"{detail}",
+            headers={"WWW-Authenticate": authenticate_value},
         )

@@ -1,6 +1,8 @@
 import os
 from functools import lru_cache
+from typing import ClassVar
 
+from fastapi.security import OAuth2PasswordBearer
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -38,6 +40,7 @@ class Settings(BaseSettings):
     AUTH_FASTAPI_PORT: int = Field(default="8000")
 
     # JWT
+    REFRESH_TOKEN_MAX_LENGTH: int = 300
     JWT_SECRET: str = Field(default="Secret encode token")
     JWT_CODE: str = Field(default="utf-8")
     # Acess token lifetime in hours
@@ -61,9 +64,19 @@ class Settings(BaseSettings):
     HASHED_PASSWORD_MAX_LENGTH: int = 255
     FIRST_NAME_MAX_LENGTH: int = 255
     LAST_NAME_MAX_LENGTH: int = 255
+    FINGERPRINT_MAX_LENGTH: int = 50
+
+    oauth2_scheme: ClassVar = OAuth2PasswordBearer(
+        tokenUrl=URL_PREFIX + "/auth/login",
+        scopes={
+            "auth_admin": "Admin to manage roles and access",
+            "subscriber": "User who paid subscription",
+        },
+    )
 
     @property
     def postgres_dsn(self) -> str:
+        return f"postgresql+asyncpg://{self.PG_USER}:{self.PG_PASSWORD}@localhost:{self.PG_PORT}/{self.PG_DB}"
         return f"postgresql+asyncpg://{self.PG_USER}:{self.PG_PASSWORD}@{self.PG_HOST}:{self.PG_PORT}/{self.PG_DB}"
 
 

@@ -2,16 +2,24 @@ from datetime import datetime
 from functools import lru_cache
 from typing import Annotated
 
-from fastapi import Depends, HTTPException
+from fastapi import Depends
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.exceptions import (CommonExistsException, DBException,
-                             RoleNotFoundException)
+from core.exceptions import (
+    CommonExistsException,
+    DBException,
+    RoleNotFoundException,
+)
 from db.postgres.postgres import PostgresStorage, get_postgers_storage
 from models.role import Role
-from schemas.role import (RoleCreateSchema, RoleDBSchema, RoleTitleSchema,
-                          RoleUpdateSchema)
+from schemas.role import (
+    RoleCreateSchema,
+    RoleDBSchema,
+    RoleResponseSchema,
+    RoleTitleSchema,
+    RoleUpdateSchema,
+)
 
 
 class RoleService:
@@ -19,20 +27,22 @@ class RoleService:
         self.model = Role
         self.database = database
 
-    async def list(self, session: AsyncSession) -> list[RoleDBSchema] | None:
+    async def list(self, session: AsyncSession) -> list[RoleResponseSchema]:
         """Get a list of the roles from the database."""
+        roles = []
         roles_from_db = await self.database.get_list(
             session=session, table=self.model
         )
-        roles = [
-            RoleDBSchema.model_validate(role_from_db)
-            for role_from_db in roles_from_db
-        ]
+        if roles_from_db:
+            roles = [
+                RoleResponseSchema.model_validate(role_from_db)
+                for role_from_db in roles_from_db
+            ]
         return roles
 
     async def create(
         self, session: AsyncSession, role: RoleCreateSchema
-    ) -> RoleDBSchema | HTTPException:
+    ) -> RoleDBSchema:
         """Create a role in the database."""
         try:
             if not (
@@ -49,7 +59,7 @@ class RoleService:
 
     async def get(
         self, session: AsyncSession, role: RoleTitleSchema
-    ) -> RoleDBSchema | HTTPException:
+    ) -> RoleDBSchema:
         """Get a role from sthe database."""
         if not (
             role_from_db := await self.database.get(
@@ -64,7 +74,7 @@ class RoleService:
         session: AsyncSession,
         role_title: RoleTitleSchema,
         update_role_data: RoleUpdateSchema,
-    ) -> RoleDBSchema | HTTPException:
+    ) -> RoleDBSchema:
         """Patch the fields of a role in the database."""
         if not (
             role_from_db := await self.database.get(

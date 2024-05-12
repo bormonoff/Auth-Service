@@ -57,6 +57,8 @@ class RoleUpdateSchema(BaseModel):
 
 
 class RoleResponseSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     title: str
     description: str
 

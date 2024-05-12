@@ -2,10 +2,12 @@ import contextlib
 
 import uvicorn
 from fastapi import FastAPI
+from fastapi.params import Security
 
-from api.v1 import auth, personal, roles
+from api.v1 import access, auth, personal, roles
 from core.config import get_settings
 from db.prepare_db import create_database, redis_shutdown, redis_startup
+from util.JWT_helper import token_check
 
 
 @contextlib.asynccontextmanager
@@ -36,7 +38,16 @@ app.include_router(
     tags=["Personal account."],
 )
 app.include_router(
-    roles.router, prefix=get_settings().URL_PREFIX + "/roles", tags=["Roles"]
+    roles.router,
+    prefix=get_settings().URL_PREFIX + "/roles",
+    tags=["Roles"],
+    dependencies=[Security(token_check, scopes=["auth_admin"])],
+)
+app.include_router(
+    access.router,
+    prefix=get_settings().URL_PREFIX + "/access",
+    tags=["Access"],
+    dependencies=[Security(token_check, scopes=["auth_admin"])],
 )
 
 if __name__ == "__main__":

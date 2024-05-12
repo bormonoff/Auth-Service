@@ -3,6 +3,7 @@ from datetime import datetime
 
 from sqlalchemy import Boolean, Column, DateTime, String
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 from sqlalchemy_utils import EmailType
 from werkzeug.security import check_password_hash
 
@@ -32,6 +33,14 @@ class User(session_handler.base):
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     modified_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
+    access = relationship(
+        "UserRoleModel",
+        back_populates="user",
+        uselist=True,
+    )
+    fingerprints = relationship(
+        "Fingerprint", back_populates="user", uselist=True
+    )
 
     def check_password(self, password: str) -> bool:
         return check_password_hash(self.password, password)
