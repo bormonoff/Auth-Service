@@ -64,3 +64,18 @@ INVALID_USER_SURNAME = [
     )
 ]
 
+SUPERUSER_DATA = {
+    "login": "superuser",
+    "email": "super@user.com",
+    "first_name": "superuser",
+    "last_name": "superuser"
+}
+
+NEW_USER_DATA = {
+    "login": "new_user_login",
+    "email": "new_user@email.com",
+    "first_name": "new_user_name",
+    "last_name": "new_user_surname",
+    "password": "new_password"
+}
+

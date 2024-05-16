@@ -6,7 +6,7 @@ from settings import get_settings
 from testdata.common import HEADERS
 from testdata.personal import USER_DATA, INVALID_USER_LOGIN_DATA, INVALID_USER_NAME, INVALID_USER_SURNAME
 
-pytestmark = pytest.mark.profile
+pytestmark = pytest.mark.register
 
 ENDPOINT = f"{get_settings().API_URL}/profile/register"
 
