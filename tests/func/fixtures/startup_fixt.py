@@ -3,6 +3,7 @@ import asyncio
 import asyncpg
 import pytest
 from aiohttp import ClientSession
+from redis.asyncio import Redis
 from settings import get_settings
 
 
@@ -22,6 +23,16 @@ async def get_http_session():
     yield client
     await client.close()
 
+
+@pytest.fixture(scope="session")
+async def get_redis_session():
+    """Creates and closes http client."""
+    redis = Redis(host=get_settings().AUTH_REDIS_HOST,
+                  port=get_settings().AUTH_REDIS_PORT,
+                  db=0, decode_responses=True)
+    yield redis
+    await redis.close()
+    
 
 @pytest.fixture(scope="session")
 async def get_postgres_session():

@@ -73,23 +73,27 @@ TABLES_SCHEMA = [
 ]
 
 USER_CREATION = [
-    """INSERT INTO "user" (id,
-                         login,
-                         email,hashed_password,
-                         first_name,
-                         last_name,
-                         created_at,
-                         modified_at,
-                         is_active)
-    VALUES ('8afd98c5-a349-4904-b5a8-403e61517999',
-            'login',
-            'example@email.com',
-            '$argon2id$v=19$m=65536,t=3,p=4$uCOdRliaIxLn0RcxehobrA$BaRe4kIfbhHuFBtvGPGIfIHzcivYnMrGElhcSWqdVxY',
-            'name',
-            'password',
-            '2024-04-26 17:26:11.42932',
-            '2024-04-26 17:26:11.429322',
-            'true');
+    """INSERT INTO "user" (
+        id,
+        login,
+        email,hashed_password,
+        first_name,
+        last_name,
+        created_at,
+        modified_at,
+        is_active
+    )
+    VALUES (
+        '8afd98c5-a349-4904-b5a8-403e61517999',
+        'login',
+        'example@email.com',
+        '$argon2id$v=19$m=65536,t=3,p=4$uCOdRliaIxLn0RcxehobrA$BaRe4kIfbhHuFBtvGPGIfIHzcivYnMrGElhcSWqdVxY',
+        'name',
+        'password',
+        '2024-04-26 17:26:11.42932',
+        '2024-04-26 17:26:11.429322',
+        'true'
+    );
 """,
     """INSERT INTO "user" (id,
                          login,

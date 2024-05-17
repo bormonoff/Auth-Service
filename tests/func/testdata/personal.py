@@ -68,7 +68,8 @@ SUPERUSER_DATA = {
     "login": "superuser",
     "email": "super@user.com",
     "first_name": "superuser",
-    "last_name": "superuser"
+    "last_name": "superuser",
+    "password": "superuser"
 }
 
 NEW_USER_DATA = {
