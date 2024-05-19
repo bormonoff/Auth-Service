@@ -37,7 +37,7 @@ INVALID_USER_LOGIN_DATA = [
             "last_name": "surname",
             "password": "password",
         }
-    )
+    ),
 ]
 
 INVALID_USER_NAME = [
@@ -69,7 +69,7 @@ SUPERUSER_DATA = {
     "email": "super@user.com",
     "first_name": "superuser",
     "last_name": "superuser",
-    "password": "superuser"
+    "password": "superuser",
 }
 
 NEW_USER_DATA = {
@@ -77,6 +77,5 @@ NEW_USER_DATA = {
     "email": "new_user@email.com",
     "first_name": "new_user_name",
     "last_name": "new_user_surname",
-    "password": "new_password"
+    "password": "new_password",
 }
-

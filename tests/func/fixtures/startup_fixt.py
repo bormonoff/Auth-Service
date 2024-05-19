@@ -27,12 +27,15 @@ async def get_http_session():
 @pytest.fixture(scope="session")
 async def get_redis_session():
     """Creates and closes http client."""
-    redis = Redis(host=get_settings().AUTH_REDIS_HOST,
-                  port=get_settings().AUTH_REDIS_PORT,
-                  db=0, decode_responses=True)
+    redis = Redis(
+        host="localhost",
+        port=get_settings().AUTH_REDIS_PORT,
+        db=0,
+        decode_responses=True,
+    )
     yield redis
-    await redis.close()
-    
+    await redis.aclose()
+
 
 @pytest.fixture(scope="session")
 async def get_postgres_session():

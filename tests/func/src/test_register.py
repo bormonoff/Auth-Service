@@ -1,10 +1,10 @@
 from http import HTTPStatus
 
 import pytest
-
 from settings import get_settings
 from testdata.common import HEADERS
-from testdata.personal import USER_DATA, INVALID_USER_LOGIN_DATA, INVALID_USER_NAME, INVALID_USER_SURNAME
+from testdata.personal import (INVALID_USER_LOGIN_DATA, INVALID_USER_NAME,
+                               INVALID_USER_SURNAME, USER_DATA)
 
 pytestmark = pytest.mark.register
 
@@ -13,9 +13,11 @@ ENDPOINT = f"{get_settings().API_URL}/profile/register"
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("user", USER_DATA)
-async def test_success_registration(empty_db_tables, get_http_session, user):
+async def test_success_registration(empty_db_tables, get_http_session,
+                                    user):
     """Checks user registration."""
-    response = await get_http_session.post(url=ENDPOINT, headers=HEADERS, json=user)
+    response = await get_http_session.post(url=ENDPOINT, headers=HEADERS,
+                                           json=user)
     body = await response.json()
     status = response.status
 
@@ -28,9 +30,11 @@ async def test_success_registration(empty_db_tables, get_http_session, user):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("user", INVALID_USER_LOGIN_DATA)
-async def test_wrong_login_registration(empty_db_tables, get_http_session, user):
+async def test_wrong_login_registration(empty_db_tables, get_http_session,
+                                        user):
     """Checks invalid registration with incorrect login."""
-    response = await get_http_session.post(url=ENDPOINT, headers=HEADERS, json=INVALID_USER_NAME)
+    response = await get_http_session.post(url=ENDPOINT, headers=HEADERS,
+                                           json=INVALID_USER_NAME)
     status = response.status
 
     assert status == HTTPStatus.UNPROCESSABLE_ENTITY
@@ -39,7 +43,8 @@ async def test_wrong_login_registration(empty_db_tables, get_http_session, user)
 @pytest.mark.asyncio
 async def test_wrong_name_registration(empty_db_tables, get_http_session):
     """Checks invalid registration with incorrect name."""
-    response = await get_http_session.post(url=ENDPOINT, headers=HEADERS, json=INVALID_USER_NAME)
+    response = await get_http_session.post(url=ENDPOINT, headers=HEADERS,
+                                           json=INVALID_USER_NAME)
     status = response.status
 
     assert status == HTTPStatus.UNPROCESSABLE_ENTITY
@@ -48,7 +53,8 @@ async def test_wrong_name_registration(empty_db_tables, get_http_session):
 @pytest.mark.asyncio
 async def test_wrong_name_registration(empty_db_tables, get_http_session):
     """Checks invalid registration with incorrect surname."""
-    response = await get_http_session.post(url=ENDPOINT, headers=HEADERS, json=INVALID_USER_SURNAME)
+    response = await get_http_session.post(url=ENDPOINT, headers=HEADERS,
+                                           json=INVALID_USER_SURNAME)
     status = response.status
 
     assert status == HTTPStatus.UNPROCESSABLE_ENTITY

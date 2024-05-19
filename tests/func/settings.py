@@ -46,11 +46,11 @@ class Settings(BaseSettings):
 
     # Routes
     API_URL: str = "http://localhost:8000/api/v1"
-    URL_ROLES: str = "/roles"
 
-    #JWT key
+    # JWT key
     JWT_SECRET: str = "Secret encode token"
     JWT_CODE: str = Field(default="utf-8")
+
 
 @lru_cache
 def get_settings():
