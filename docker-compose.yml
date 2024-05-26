@@ -1,0 +1,65 @@
+name: authorization_service
+version: '3.8'
+
+services:
+  postgres-auth:
+    container_name: $PG_HOST
+    image: postgres:16.0-alpine3.18
+    env_file:
+      - .env
+    expose:
+      - $PG_PORT
+    volumes:
+      - postgres_auth_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -p $PG_PORT -U $PG_USER -d $PG_DB"]
+      interval: 3s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    restart: always
+    command: -p $PG_PORT
+
+  redis-auth:
+    container_name: $AUTH_REDIS_HOST
+    image: redis:7.2.3-alpine3.19
+    expose:
+      -  $AUTH_REDIS_PORT
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli", "-p $AUTH_REDIS_PORT", "ping"]
+      interval: 3s
+      timeout: 1s
+      retries: 3
+    volumes:
+      - redis_auth_data:/data
+    restart: always
+    command: redis-server --port $AUTH_REDIS_PORT --save 60 1 --loglevel notice
+
+  fastapi-auth:
+    container_name: $AUTH_FASTAPI_HOST
+    build:
+      context: ./src
+    image: $AUTH_FASTAPI_HOST
+    env_file:
+      - .env
+    ports:
+      - $AUTH_FASTAPI_PORT:$AUTH_FASTAPI_PORT
+    volumes:
+      - fastapi_auth_log:/src/logs
+    healthcheck:
+      test: curl -s -f http://$localhost:$AUTH_FASTAPI_PORT/auth/docs || exit 1
+      interval: 3s
+      timeout: 1s
+      retries: 3
+    restart: always
+    depends_on:
+      postgres-auth:
+        condition: service_healthy
+      redis-auth:
+        condition: service_healthy
+    command: bash -c "poetry run alembic upgrade head && gunicorn -w 4 -k uvicorn.workers.UvicornWorker -b :$AUTH_FASTAPI_PORT main:app"
+
+volumes:
+  postgres_auth_data:
+  redis_auth_data:
+  fastapi_auth_log:

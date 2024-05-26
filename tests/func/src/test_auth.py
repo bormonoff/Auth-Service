@@ -10,7 +10,7 @@ from util.token_helpers import decode_payload_helper, generate_sign_helper
 
 pytestmark = pytest.mark.authorization
 
-ENDPOINT = f"{get_settings().URL}/auth"
+ENDPOINT = f"{get_settings().API_URL}/auth"
 
 
 @pytest.mark.asyncio

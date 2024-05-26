@@ -11,7 +11,4 @@ COPY poetry.lock pyproject.toml ./
 RUN poetry config virtualenvs.create false \
   && poetry install --no-root
 
-COPY src/ src/
-COPY .env .
-
-ENTRYPOINT ["python3", "src/main.py"]
+COPY . .

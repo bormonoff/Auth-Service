@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     PG_USER: str = Field(default="Postgres_user")
     PG_PASSWORD: str = Field(default="Postgres_pasword")
     PG_HOST: str = Field(default="Postgres_host")
-    PG_PORT: int = Field(default=8002)
+    PG_PORT: int = Field(default=8001)
     PG_DB: str = Field(default="Auth_DB")
 
     # Redis

@@ -1,0 +1,61 @@
+name: authorization_tests
+version: '3.8'
+
+services:
+  postgres-auth-test:
+    container_name: $PG_HOST
+    image: postgres:16.0-alpine3.18
+    env_file:
+      - .env
+    ports:
+      - 20001:$PG_PORT
+    volumes:
+      - postgres_auth_data_tests:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -p $PG_PORT -U $PG_USER -d $PG_DB"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    restart: always
+    command: -p $PG_PORT
+
+  redis-auth-test:
+    image: redis:7.2.3-alpine3.19
+    container_name: $AUTH_REDIS_HOST
+    ports:
+      -  20002:$AUTH_REDIS_PORT
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli", "-p $AUTH_REDIS_PORT", "ping"]
+      interval: 10s
+      timeout: 1s
+      retries: 3
+    volumes:
+      - redis_auth_data_tests:/data
+    restart: always
+    command: redis-server --port $AUTH_REDIS_PORT --save 60 1 --loglevel notice
+
+  fastapi-auth-test:
+    build:
+      context: ../../src
+    image: $AUTH_FASTAPI_HOST
+    env_file:
+      - .env
+    ports:
+      - 20000:$AUTH_FASTAPI_PORT
+    healthcheck:
+      test: curl -s -f http://$localhost:$AUTH_FASTAPI_PORT/auth/docs || exit 1
+      interval: 3s
+      timeout: 1s
+      retries: 3
+    restart: always
+    depends_on:
+      postgres-auth-test:
+        condition: service_healthy
+      redis-auth-test:
+        condition: service_healthy
+    command: gunicorn -w 1 -k uvicorn.workers.UvicornWorker -b :$AUTH_FASTAPI_PORT main:app
+
+volumes:
+  postgres_auth_data_tests:
+  redis_auth_data_tests:
