@@ -7,4 +7,3 @@ __pycache__/
 
 # files
 .env
-poetry.lock
