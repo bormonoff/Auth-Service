@@ -1,22 +1,22 @@
 from http import HTTPStatus
 
 import pytest
+
 from settings import get_settings
 from testdata.auth import GET_REFRESH_TOKEN_REQUEST, TOKENS
 from testdata.common import AUTH_HEADERS
 from testdata.personal import SUPERUSER_DATA
-
 from util.token_helpers import decode_payload_helper, generate_sign_helper
 
 pytestmark = pytest.mark.authorization
 
-URL = f"{get_settings().API_URL}/auth"
+ENDPOINT = f"{get_settings().URL}/auth"
 
 
 @pytest.mark.asyncio
 async def test_login_returns_correct_json(prepare_users, get_http_session):
-    """Checks that a login API returns json with correct fields."""
-    url = f"{URL}/login"
+    """Checks that a login API returns json with the correct fields."""
+    url = f"{ENDPOINT}/login"
     data = f"grant_type=&username={SUPERUSER_DATA["login"]}&password={SUPERUSER_DATA["password"]}&scope=&client_id=&client_secret="
 
     response = await get_http_session.post(
@@ -37,8 +37,8 @@ async def test_login_returns_correct_json(prepare_users, get_http_session):
 async def test_login_returns_correct_token_data(
     prepare_users, get_http_session, token
 ):
-    """Checks that a login API returns correct access and refresh tokens."""
-    url = f"{URL}/login"
+    """Checks that a login API returns the correct access and refresh tokens."""
+    url = f"{ENDPOINT}/login"
     data = f"grant_type=&username={SUPERUSER_DATA["login"]}&password={SUPERUSER_DATA["password"]}&scope=&client_id=&client_secret="
 
     response = await get_http_session.post(
@@ -68,8 +68,8 @@ async def test_login_returns_correct_token_data(
 async def test_login_returns_correct_token_sign(
     prepare_users, get_http_session, token
 ):
-    """Checks that an API returns correct header and payload sign."""
-    url = f"{URL}/login"
+    """Checks that an API returns the correct header and payload signs."""
+    url = f"{ENDPOINT}/login"
     data = f"grant_type=&username={SUPERUSER_DATA["login"]}&password={SUPERUSER_DATA["password"]}&scope=&client_id=&client_secret="
 
     response = await get_http_session.post(
@@ -91,8 +91,8 @@ async def test_login_returns_correct_token_sign(
 async def test_login_saves_refresh_token(
     prepare_users, get_http_session, get_postgres_session
 ):
-    """Checks that an API saves refresh token in the refresh_token table."""
-    url = f"{URL}/login"
+    """Checks that an API saves the refresh token in the refresh_token table."""
+    url = f"{ENDPOINT}/login"
     data = f"grant_type=&username={SUPERUSER_DATA["login"]}&password={SUPERUSER_DATA["password"]}&scope=&client_id=&client_secret="
 
     response = await get_http_session.post(
@@ -113,8 +113,8 @@ async def test_login_saves_refresh_token(
 async def test_refresh_returns_correct_json(
     get_superuser_refresh_token, get_http_session
 ):
-    """Checks that a refresh API returns json with correct fields."""
-    url = f"{URL}/refresh"
+    """Checks that a refresh API returns a json with the correct fields."""
+    url = f"{ENDPOINT}/refresh"
     data = get_superuser_refresh_token
 
     response = await get_http_session.post(
@@ -135,8 +135,8 @@ async def test_refresh_returns_correct_json(
 async def test_refresh_returns_correct_token_data(
     get_superuser_refresh_token, get_http_session, token
 ):
-    """Checks that a refresh API returns correct access and refresh tokens."""
-    url = f"{URL}/refresh"
+    """Checks that a refresh API returns the correct access and refresh tokens."""
+    url = f"{ENDPOINT}/refresh"
     data = get_superuser_refresh_token
 
     response = await get_http_session.post(
@@ -166,8 +166,8 @@ async def test_refresh_returns_correct_token_data(
 async def test_refresh_returns_correct_token_sign(
     get_superuser_refresh_token, get_http_session, token
 ):
-    """Checks that a refresh API returns correct header and payload sign."""
-    url = f"{URL}/refresh"
+    """Checks that a refresh API returns the correct header and payload signs."""
+    url = f"{ENDPOINT}/refresh"
     data = get_superuser_refresh_token
 
     response = await get_http_session.post(
@@ -189,8 +189,8 @@ async def test_refresh_returns_correct_token_sign(
 async def test_refresh_deletes_token(
     get_superuser_refresh_token, get_http_session, get_postgres_session
 ):
-    """Checks that a refresh API deletes the initial refresh_token."""
-    url = f"{URL}/refresh"
+    """Checks that the refresh API deletes the initial refresh_token."""
+    url = f"{ENDPOINT}/refresh"
     data = get_superuser_refresh_token
 
     response = await get_http_session.post(
@@ -211,7 +211,7 @@ async def test_refresh_saves_token(
     get_superuser_refresh_token, get_http_session, get_postgres_session
 ):
     """Checks that a refresh API saves a new token."""
-    url = f"{URL}/refresh"
+    url = f"{ENDPOINT}/refresh"
     data = get_superuser_refresh_token
 
     response = await get_http_session.post(
@@ -236,7 +236,7 @@ async def test_logout_deletes_token(
     get_postgres_session,
 ):
     """Checks that a logout API deletes refresh_token."""
-    url = f"{URL}/logout"
+    url = f"{ENDPOINT}/logout"
 
     response = await get_http_session.post(
         url=url, headers=prepare_headers_with_superuser_token
@@ -260,9 +260,9 @@ async def test_logout_emplaces_invalid_token_in_redis(
     get_http_session,
     get_redis_session,
 ):
-    """Checks that logout API put acces_token to redis."""
+    """Checks that logout API put an acces_token into the redis."""
 
-    url = f"{URL}/logout"
+    url = f"{ENDPOINT}/logout"
 
     response = await get_http_session.post(
         url=url, headers=prepare_headers_with_superuser_token

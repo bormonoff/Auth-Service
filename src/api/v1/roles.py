@@ -6,12 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import get_settings
 from db.postgres.session_handler import session_handler
-from schemas.role import (
-    RoleCreateSchema,
-    RoleResponseSchema,
-    RoleTitleSchema,
-    RoleUpdateSchema,
-)
+from schemas.role import (RoleCreateSchema, RoleResponseSchema,
+                          RoleTitleSchema, RoleUpdateSchema)
 from services.role_service import RoleService, get_role_service
 
 router = APIRouter()

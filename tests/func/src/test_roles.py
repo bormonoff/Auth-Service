@@ -3,13 +3,8 @@ from http import HTTPStatus
 import pytest
 from settings import get_settings
 from testdata.common import HEADERS
-from testdata.roles import (
-    CREATE_ROLE,
-    DELETE_ROLE,
-    GET_ROLE,
-    INVALID_ROLE,
-    UPDATE_ROLE,
-)
+from testdata.roles import (CREATE_ROLE, DELETE_ROLE, GET_ROLE, INVALID_ROLE,
+                            UPDATE_ROLE)
 
 pytestmark = pytest.mark.roles
 

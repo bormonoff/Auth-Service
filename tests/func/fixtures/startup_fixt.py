@@ -4,12 +4,13 @@ import asyncpg
 import pytest
 from aiohttp import ClientSession
 from redis.asyncio import Redis
+
 from settings import get_settings
 
 
 @pytest.fixture(scope="session")
 def event_loop():
-    """Makes event loop."""
+    """Makes an event loop."""
     policy = asyncio.get_event_loop_policy()
     loop = policy.new_event_loop()
     yield loop
@@ -18,7 +19,7 @@ def event_loop():
 
 @pytest.fixture(scope="session")
 async def get_http_session():
-    """Creates and closes http client."""
+    """Creates and closes the http client."""
     client = ClientSession()
     yield client
     await client.close()
@@ -26,7 +27,7 @@ async def get_http_session():
 
 @pytest.fixture(scope="session")
 async def get_redis_session():
-    """Creates and closes http client."""
+    """Creates and closes the redis client."""
     redis = Redis(
         host="localhost",
         port=get_settings().AUTH_REDIS_PORT,
@@ -39,7 +40,7 @@ async def get_redis_session():
 
 @pytest.fixture(scope="session")
 async def get_postgres_session():
-    """Creates and closes postgres client."""
+    """Creates and closes the postgres client."""
     conn = await asyncpg.connect(
         host="localhost",
         port=get_settings().PG_PORT,

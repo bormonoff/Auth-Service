@@ -1,5 +1,6 @@
 import pytest
 from Cryptodome.Hash import HMAC, SHA256
+
 from settings import get_settings
 from testdata.common import HEADERS
 
@@ -21,6 +22,7 @@ async def get_acess_token():
 
 @pytest.fixture(scope="function")
 async def prepare_headers_with_superuser_token(get_acess_token):
+    """Prepares superuser headers."""
     headers = HEADERS
     headers["Authorization"] = f"Bearer {get_acess_token}"
 

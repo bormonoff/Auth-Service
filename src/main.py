@@ -6,13 +6,12 @@ from fastapi.params import Security
 
 from api.v1 import access, auth, personal, roles
 from core.config import get_settings
-from db.prepare_db import create_database, redis_shutdown, redis_startup
+from db.prepare_db import redis_shutdown, redis_startup
 from util.JWT_helper import token_check
 
 
 @contextlib.asynccontextmanager
 async def lifespan(app: FastAPI):
-    await create_database()
     await redis_startup()
     yield
     await redis_shutdown()

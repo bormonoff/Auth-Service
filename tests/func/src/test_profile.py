@@ -1,6 +1,7 @@
 from http import HTTPStatus
 
 import pytest
+
 from settings import get_settings
 from testdata.personal import NEW_USER_DATA, SUPERUSER_DATA
 

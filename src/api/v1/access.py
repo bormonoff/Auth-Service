@@ -33,7 +33,7 @@ async def assign_user_role(
 @router.post(
     "/remove",
     response_model=AccessDBSchema,
-    description="Remove role from user",
+    description="Remove a role from the user",
     status_code=HTTPStatus.OK,
 )
 async def remove_user_role(
@@ -43,7 +43,7 @@ async def remove_user_role(
         description="Specify user login and role title to remove role to user"
     ),
 ) -> AccessDBSchema:
-    """Remove role to user"""
+    """Remove a role from the user"""
     result = await access_service.delete(session=session, access=access)
     return result
 
@@ -51,7 +51,7 @@ async def remove_user_role(
 @router.get(
     "/verify",
     response_model=None,
-    description="Verify user has role",
+    description="Verify does the user have a role",
     status_code=HTTPStatus.OK,
 )
 async def verify_user_has_role(
@@ -62,7 +62,7 @@ async def verify_user_has_role(
         str, Query(pattern=get_settings().ROLE_TITLE_PATTERN)
     ],
 ) -> bool:
-    """Verify user has role"""
+    """Verifies does the user have a role"""
     access = AccessInSchema(user_login=user_login, role_title=role_title)
     result = await access_service.get(session=session, access=access)
     return result
@@ -71,7 +71,7 @@ async def verify_user_has_role(
 @router.get(
     "/user_roles/{user_login}",
     response_model=ShowUserAccessSchema,
-    description="Get role information",
+    description="Get an information about the user roles",
     status_code=HTTPStatus.OK,
 )
 async def list_user_roles(
@@ -79,7 +79,7 @@ async def list_user_roles(
     access_service: Annotated[AccessService, Depends(get_access_service)],
     user_login: Annotated[str, Path(pattern=get_settings().LOGIN_PATTERN)],
 ) -> ShowUserAccessSchema:
-    """Get all user roles"""
+    """Gets all user roles"""
     result = await access_service.get_user_roles(
         session=session, user_login=user_login
     )

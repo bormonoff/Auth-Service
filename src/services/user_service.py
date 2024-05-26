@@ -10,21 +10,13 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.exceptions import (
-    DBException,
-    InvalidToken,
-    UserHasBeenDeletedException,
-    UserNotFoundException,
-)
+from core.exceptions import (DBException, InvalidToken,
+                             UserHasBeenDeletedException,
+                             UserNotFoundException)
 from db.postgres.postgres import PostgresStorage, get_postgers_storage
 from models.user import User
-from schemas.user import (
-    UserInDB,
-    UserLoginSchema,
-    UserSaveToDB,
-    UserSelf,
-    UserSelfResponse,
-)
+from schemas.user import (UserInDB, UserLoginSchema, UserSaveToDB, UserSelf,
+                          UserSelfResponse)
 from util.hash_helper import get_hasher
 
 

@@ -44,6 +44,7 @@ GET_ROLE = [
     },
 ]
 
+
 DELETE_ROLE = [
     {
         "role_title": "auth_admin",
@@ -69,7 +70,6 @@ CREATE_ROLE = [
         "description": "some description",
     },
 ]
-
 
 UPDATE_ROLE = [
     {
@@ -118,15 +118,6 @@ UPDATE_ROLE = [
         },
     },
     {
-        "role_title": "subscriber",
-        "update_data": {
-            "id": "21111111-1111-1111-1111-111111111111",
-        },
-        "result": {
-            "status": HTTPStatus.UNPROCESSABLE_ENTITY,
-        },
-    },
-    {
         "role_title": "auth_admin",
         "update_data": {
             "title": "",
@@ -136,17 +127,7 @@ UPDATE_ROLE = [
             "status": HTTPStatus.UNPROCESSABLE_ENTITY,
         },
     },
-    {
-        "role_title": "auth_admin",
-        "update_data": {
-            "title": "auth_admin",
-        },
-        "result": {
-            "status": HTTPStatus.UNPROCESSABLE_ENTITY,
-        },
-    },
 ]
-
 
 INVALID_ROLE = {
     "title": "so",

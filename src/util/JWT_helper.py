@@ -12,11 +12,8 @@ from pydantic import BaseModel
 
 from core.config import get_settings
 from core.exceptions import ExpireToken, UnAuthorizedException
-from schemas.token import (
-    AccessTokenPayload,
-    RefreshTokenPayload,
-    TokenCheckResponse,
-)
+from schemas.token import (AccessTokenPayload, RefreshTokenPayload,
+                           TokenCheckResponse)
 
 
 class JWTHelper:

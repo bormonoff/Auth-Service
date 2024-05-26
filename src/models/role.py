@@ -1,10 +1,11 @@
 import uuid
 from datetime import datetime
 
-from core.config import get_settings
-from db.postgres.session_handler import session_handler
 from sqlalchemy import Column, DateTime, String
 from sqlalchemy.dialects.postgresql import UUID
+
+from core.config import get_settings
+from db.postgres.session_handler import session_handler
 
 
 class Role(session_handler.base):

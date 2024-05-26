@@ -7,13 +7,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import joinedload
 
-from core.exceptions import (
-    AccessNotFoundException,
-    CommonExistsException,
-    DBException,
-    RoleNotFoundException,
-    UserNotFoundException,
-)
+from core.exceptions import (AccessNotFoundException, CommonExistsException,
+                             DBException, RoleNotFoundException,
+                             UserNotFoundException)
 from db.postgres.postgres import PostgresStorage, get_postgers_storage
 from models.role import Role
 from models.user import User

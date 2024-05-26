@@ -6,20 +6,12 @@ from fastapi import Depends
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.exceptions import (
-    CommonExistsException,
-    DBException,
-    RoleNotFoundException,
-)
+from core.exceptions import (CommonExistsException, DBException,
+                             RoleNotFoundException)
 from db.postgres.postgres import PostgresStorage, get_postgers_storage
 from models.role import Role
-from schemas.role import (
-    RoleCreateSchema,
-    RoleDBSchema,
-    RoleResponseSchema,
-    RoleTitleSchema,
-    RoleUpdateSchema,
-)
+from schemas.role import (RoleCreateSchema, RoleDBSchema, RoleResponseSchema,
+                          RoleTitleSchema, RoleUpdateSchema)
 
 
 class RoleService:

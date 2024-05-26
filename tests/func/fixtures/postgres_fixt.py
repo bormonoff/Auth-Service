@@ -1,16 +1,15 @@
 import pytest
-from testdata.auth import (
-    GET_REFRESH_TOKEN_REQUEST,
-    INSERT_SUPERUSER_FINGERPRINT_REQUEST,
-    INSERT_SUPERUSER_REFRESH_TOKEN_REQUEST,
-)
+
+from testdata.auth import (GET_REFRESH_TOKEN_REQUEST,
+                           INSERT_SUPERUSER_FINGERPRINT_REQUEST,
+                           INSERT_SUPERUSER_REFRESH_TOKEN_REQUEST)
 from testdata.db_schema import TABLES_SCHEMA, USER_CREATION
 from testdata.roles import INSERT_ROLE_DB
 
 
 @pytest.fixture(scope="session")
 async def prepare_db_tables(get_postgres_session):
-    """Creates tables in the database."""
+    """Creates the tables in the database."""
     for table_data in TABLES_SCHEMA:
         await get_postgres_session.execute(table_data["data"])
 
@@ -33,7 +32,7 @@ async def empty_db_tables(prepare_db_tables, get_postgres_session):
 
 @pytest.fixture(scope="function")
 async def insert_superuser_refresh_token(prepare_users, get_postgres_session):
-    """Insert a superuser refresh token in the database."""
+    """Inserts a superuser refresh token in the database."""
     await get_postgres_session.execute(INSERT_SUPERUSER_FINGERPRINT_REQUEST)
     await get_postgres_session.execute(INSERT_SUPERUSER_REFRESH_TOKEN_REQUEST)
 

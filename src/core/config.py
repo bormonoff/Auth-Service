@@ -6,7 +6,6 @@ from fastapi.security import OAuth2PasswordBearer
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-# Корень проекта
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ENV_PATH = os.path.join(os.path.dirname(BASE_DIR), ".env")
 
@@ -77,7 +76,6 @@ class Settings(BaseSettings):
     @property
     def postgres_dsn(self) -> str:
         return f"postgresql+asyncpg://{self.PG_USER}:{self.PG_PASSWORD}@localhost:{self.PG_PORT}/{self.PG_DB}"
-        return f"postgresql+asyncpg://{self.PG_USER}:{self.PG_PASSWORD}@{self.PG_HOST}:{self.PG_PORT}/{self.PG_DB}"
 
 
 @lru_cache

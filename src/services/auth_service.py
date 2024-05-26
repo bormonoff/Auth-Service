@@ -14,13 +14,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from core.config import get_settings
-from core.exceptions import (
-    FingerprintNotExists,
-    InvalidToken,
-    InvalidUserOrPassword,
-    TokenNotFoundException,
-    UserNotFoundException,
-)
+from core.exceptions import (FingerprintNotExists, InvalidToken,
+                             InvalidUserOrPassword, TokenNotFoundException,
+                             UserNotFoundException)
 from db.postgres.postgres import PostgresStorage, get_postgers_storage
 from db.redis.redis_storage import get_redis_storage
 from models.fingerprint import Fingerprint
@@ -29,13 +25,8 @@ from models.token import RefreshToken
 from models.user import User
 from models.user_role import UserRoleModel
 from schemas.fingerprint import FingerprintInDB
-from schemas.token import (
-    AccessTokenPayload,
-    RefreshTokenInDB,
-    RefreshTokenPayload,
-    TokenHeader,
-    UserTokenPair,
-)
+from schemas.token import (AccessTokenPayload, RefreshTokenInDB,
+                           RefreshTokenPayload, TokenHeader, UserTokenPair)
 from schemas.user import UserBase, UserInDBAccess
 from util.hash_helper import get_hasher
 from util.JWT_helper import get_jwt_helper

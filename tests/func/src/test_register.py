@@ -1,6 +1,7 @@
 from http import HTTPStatus
 
 import pytest
+
 from settings import get_settings
 from testdata.common import HEADERS
 from testdata.personal import (INVALID_USER_LOGIN_DATA, INVALID_USER_NAME,
@@ -13,9 +14,10 @@ ENDPOINT = f"{get_settings().API_URL}/profile/register"
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("user", USER_DATA)
-async def test_success_registration(empty_db_tables, get_http_session,
-                                    user):
-    """Checks user registration."""
+async def test_success_registration(
+    empty_db_tables, get_http_session, user
+):
+    """Checks a user registration."""
     response = await get_http_session.post(url=ENDPOINT, headers=HEADERS,
                                            json=user)
     body = await response.json()
@@ -30,9 +32,10 @@ async def test_success_registration(empty_db_tables, get_http_session,
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("user", INVALID_USER_LOGIN_DATA)
-async def test_wrong_login_registration(empty_db_tables, get_http_session,
-                                        user):
-    """Checks invalid registration with incorrect login."""
+async def test_wrong_login_registration(
+    empty_db_tables, get_http_session, user
+):
+    """Checks an invalid registration with the incorrect login."""
     response = await get_http_session.post(url=ENDPOINT, headers=HEADERS,
                                            json=INVALID_USER_NAME)
     status = response.status
@@ -42,7 +45,7 @@ async def test_wrong_login_registration(empty_db_tables, get_http_session,
 
 @pytest.mark.asyncio
 async def test_wrong_name_registration(empty_db_tables, get_http_session):
-    """Checks invalid registration with incorrect name."""
+    """Checks an invalid registration with the incorrect name."""
     response = await get_http_session.post(url=ENDPOINT, headers=HEADERS,
                                            json=INVALID_USER_NAME)
     status = response.status
@@ -52,7 +55,7 @@ async def test_wrong_name_registration(empty_db_tables, get_http_session):
 
 @pytest.mark.asyncio
 async def test_wrong_name_registration(empty_db_tables, get_http_session):
-    """Checks invalid registration with incorrect surname."""
+    """Checks an invalid registration with the incorrect surname."""
     response = await get_http_session.post(url=ENDPOINT, headers=HEADERS,
                                            json=INVALID_USER_SURNAME)
     status = response.status
