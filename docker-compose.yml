@@ -42,12 +42,12 @@ services:
     image: $AUTH_FASTAPI_HOST
     env_file:
       - .env
-    ports:
-      - $AUTH_FASTAPI_PORT:$AUTH_FASTAPI_PORT
+    expose:
+      - $AUTH_FASTAPI_PORT
     volumes:
       - fastapi_auth_log:/src/logs
     healthcheck:
-      test: curl -s -f http://$localhost:$AUTH_FASTAPI_PORT/auth/docs || exit 1
+      test: curl -s -f http://$AUTH_FASTAPI_HOST:$AUTH_FASTAPI_PORT/auth/docs || exit 1
       interval: 3s
       timeout: 1s
       retries: 3
@@ -59,7 +59,23 @@ services:
         condition: service_healthy
     command: bash -c "poetry run alembic upgrade head && gunicorn -w 4 -k uvicorn.workers.UvicornWorker -b :$AUTH_FASTAPI_PORT main:app"
 
+  nginx-auth:
+    container_name: nginx-auth
+    image: nginx:1.25.5-bookworm
+    ports:
+      - 80:80
+    volumes:
+      - nginx_auth_log:/var/log/nginx
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      fastapi-auth:
+        condition: service_healthy
+    restart: always
+
+
 volumes:
   postgres_auth_data:
   redis_auth_data:
   fastapi_auth_log:
+  nginx_auth_log:
